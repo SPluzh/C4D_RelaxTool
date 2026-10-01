@@ -1,0 +1,11 @@
+STRINGTABLE {
+  LANGID=1033 // English
+  {
+    MENU {
+      RELAXTOOL "Relax Tool";
+    }
+    TOOLTIPS {
+      RELAXTOOL "Relax Tool\nLMB Drag: Relax mesh vertices\nMMB Drag: Resize brush radius";
+    }
+  }
+}

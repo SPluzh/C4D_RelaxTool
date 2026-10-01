@@ -1,0 +1,23 @@
+STRINGTABLE toolrelaxtool
+{
+    toolrelaxtool              "Relax Tool";
+
+    RELAX_GROUP_BRUSH          "Brush";
+    RELAX_RADIUS               "Radius (px)";
+    RELAX_STRENGTH             "Strength";
+    RELAX_ITERATIONS           "Iterations";
+
+    RELAX_GROUP_MODE           "Mode";
+    RELAX_MODE                 "Relax Mode";
+    RELAX_MODE_AUTOLOCK        "Auto-lock";
+    RELAX_MODE_INTERIOR        "Interior Only";
+    RELAX_MODE_BORDER          "Border Only";
+    RELAX_MODE_ALL             "All Vertices";
+
+    RELAX_GROUP_SELECTION      "Selection";
+    RELAX_USE_SELECTION        "Respect Vertex Selection";
+
+    RELAX_GROUP_VISUAL         "Visual";
+    RELAX_BRUSH_COLOR          "Brush Color";
+    RELAX_ACTIVE_COLOR         "Active Brush Color";
+}
