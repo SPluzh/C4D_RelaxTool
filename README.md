@@ -1,57 +1,69 @@
-# C4D RelaxTool — Mesh Relax & Smooth Tool for Cinema 4D (2025 / 2026)
+# C4D RelaxTool
 
-Самостоятельный инструмент сглаживания и релакса полигональной сетки (Laplacian smoothing) для Cinema 4D, выделенный из функционала Relax Brush инструмента QuadDraw.
+A dedicated interactive mesh relaxation and Laplacian smoothing brush plugin for Maxon Cinema 4D (2025 and 2026), built in C++.
 
----
-
-## 🚀 Возможности
-
-1. **Pure Laplacian Smoothing**:
-   - Работает напрямую с активным выделенным объектом (`PolygonObject`).
-   - Не требует целевого меша или проецирования на поверхность.
-   - Сглаживает вершины в пределах радиуса кисти в экранном пространстве с плавным Smoothstep спадом (`t² × (3 - 2t)`).
-
-2. **Интеллектуальные режимы работы (Relax Mode)**:
-   - **Auto-lock**: автоматическое определение контекста при начале штриха. Если мазок начинается на границе сетки — сглаживается контур границы, а внутренние вершины блокируются. Если мазок начинается внутри — сглаживается внутренняя сетка, а форма границы остаётся неизменной.
-   - **Interior Only**: сглаживание только внутренних вершин, граница сетки строго заблокирована.
-   - **Border Only**: сглаживание только граничных вершин вдоль контура (угловые вершины силуэта сохраняются).
-   - **All Vertices**: одновременное сглаживание всех вершин под кистью.
-
-3. **Многопроходность (Iterations)**:
-   - Настройка числа итераций сглаживания (1–20) за один шаг движения кисти для быстрого расправления плотных сеток.
-
-4. **Учёт выделения (Respect Vertex Selection)**:
-   - Опциональный режим сглаживания только выделенных пользователем вершин (`Point Selection`).
+Extracted and refined from the QuadDraw relax brush, RelaxTool operates directly on the active PolygonObject with pure Laplacian smoothing—requiring no target surface or surface projection.
 
 ---
 
-## ⌨️ Управление
+## Features
 
-| Действие | Назначение |
+- **Pure Laplacian Smoothing**:
+  - Smooths vertices directly on the active PolygonObject.
+  - No target surface or raycasting dependencies required.
+  - Screen-space brush radius with smoothstep falloff (`t^2 * (3 - 2t)`).
+- **Intelligent Relax Modes**:
+  - **Auto-lock**: Automatically determines stroke intent based on initial click position. If initiated near mesh boundary edges, it relaxes boundary contours while locking interior vertices. If initiated on interior surfaces, it relaxes interior vertices while strictly locking mesh boundaries.
+  - **Interior Only**: Smooths interior topology only; outer silhouette and boundaries remain fixed.
+  - **Border Only**: Smooths boundary vertex flow along the silhouette (preserving corner vertices).
+  - **All Vertices**: Simultaneously smooths both interior and boundary vertices within brush influence.
+- **Multi-Pass Iterations**:
+  - Configurable iterations (1 to 20) per drag step for rapid topology relaxation on dense meshes.
+- **Selection Masking**:
+  - Optional "Respect Vertex Selection" mode to restrict smoothing strictly to active Point Selections.
+- **Interactive Viewport Feedback**:
+  - Clean viewport circle display with customizable idle and active brush colors.
+  - Native Cinema 4D brush resizing HUD with floating cursor statistics.
+- **Full Undo Support**:
+  - Fully undo-safe (`Ctrl+Z`).
+
+---
+
+## Controls
+
+| Action | Function |
 |---|---|
-| **LMB Drag** | Сглаживание сетки кистью (Relax stroke) |
-| **MMB Drag** (или **Ctrl + RMB Drag**) | Интерактивное изменение радиуса кисти (влево / вправо) и силы (вверх / вниз) |
-| **`[` / `]`** | Быстрое уменьшение / увеличение радиуса кисти |
-| **Esc** | Сброс текущей операции / превью |
+| **LMB Drag** | Relax mesh vertices (brush stroke) |
+| **MMB Drag** (or **Ctrl + RMB Drag**) | Interactive brush adjustment: horizontal drag adjusts **Radius**, vertical drag adjusts **Strength** |
+| **`[` / `]`** | Decrease / Increase brush radius |
+| **Esc** | Cancel active drag operation |
 
 ---
 
-## ⚙️ Параметры инструмента (Attributes)
+## Tool Settings
 
-- **Radius (px)**: радиус кисти в экранных пикселях (5–500 px).
-- **Strength**: сила воздействия кисти (0.01–1.0).
-- **Iterations**: количество проходов сглаживания за один шаг мазка (1–20).
-- **Relax Mode**: режим блокировки (`Auto-lock`, `Interior Only`, `Border Only`, `All Vertices`).
-- **Respect Vertex Selection**: сглаживать только выделенные вершины.
-- **Brush Color**: цвет окружности кисти в режиме ожидания.
-- **Active Brush Color**: цвет окружности кисти во время рисования.
+- **Radius (px)**: Brush radius in screen space pixels (5 to 500 px).
+- **Strength**: Smoothing strength factor per step (0.01 to 1.0).
+- **Iterations**: Number of Laplacian smoothing passes per drag increment (1 to 20).
+- **Relax Mode**: Vertex constraint mode (`Auto-lock`, `Interior Only`, `Border Only`, `All Vertices`).
+- **Respect Vertex Selection**: When enabled, relaxes only selected vertices.
+- **Brush Color**: Viewport brush circle color in idle state.
+- **Active Brush Color**: Viewport brush circle color while actively smoothing.
 
 ---
 
-## 🔨 Сборка и релиз
+## Installation
 
-- **Сборка для 2026**: [build_2026.bat](file:///c:/Users/user/Desktop/cpp/C4D_RelaxTool/build_2026.bat) или [build_2026.ps1](file:///c:/Users/user/Desktop/cpp/C4D_RelaxTool/build_2026.ps1)
-- **Сборка для 2025**: [build_2025.bat](file:///c:/Users/user/Desktop/cpp/C4D_RelaxTool/build_2025.bat) или [build_2025.ps1](file:///c:/Users/user/Desktop/cpp/C4D_RelaxTool/build_2025.ps1)
-- **Деплой в Cinema 4D 2026**: [deploy_2026.bat](file:///c:/Users/user/Desktop/cpp/C4D_RelaxTool/deploy_2026.bat)
-- **Деплой в Cinema 4D 2025**: [deploy_2025.bat](file:///c:/Users/user/Desktop/cpp/C4D_RelaxTool/deploy_2025.bat)
-- **Упаковка релиза (ZIP)**: [pack_release.bat](file:///c:/Users/user/Desktop/cpp/C4D_RelaxTool/pack_release.bat) формирует общий архив `C4D_RelaxTool_vX.X.X.zip` с папками для Cinema 4D 2025 и 2026.
+1. Download the latest release from the [Releases](https://github.com/SPluzh/C4D_RelaxTool/releases) section.
+2. Extract the corresponding version folder (`2025` or `2026`) into your Cinema 4D plugins directory:
+   - **Windows**: `C:\Users\<User>\AppData\Roaming\Maxon\Maxon Cinema 4D <Version>\plugins\C4D_RelaxTool\`
+3. Restart Cinema 4D.
+4. Find **Relax Tool** in the Cinema 4D Tools / Extensions menu.
+
+---
+
+## Building from Source
+
+- **Requirements**: Visual Studio 2022 (C++20), CMake 3.30+, Cinema 4D SDK 2025 / 2026.
+- Run `build_2026.bat` (for Cinema 4D 2026) or `build_2025.bat` (for Cinema 4D 2025).
+- Run `pack_release.bat` to generate the release distribution ZIP archive.
