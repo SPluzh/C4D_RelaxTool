@@ -8,10 +8,17 @@ Extracted and refined from the QuadDraw relax brush, RelaxTool operates directly
 
 ## Features
 
-- **Pure Laplacian Smoothing**:
+- **Pure Laplacian & Advanced Shape Preservation**:
   - Smooths vertices directly on the active PolygonObject.
-  - No target surface or raycasting dependencies required.
   - Screen-space brush radius with smoothstep falloff (`t^2 * (3 - 2t)`).
+  - **Deformation Algorithms**:
+    - **Tangential Slide**: Restricts relaxation strictly to the surface tangent plane. Equalizes vertex spacing without inward collapsing or volume shrinkage.
+    - **Project to Initial Surface**: Mathematically preserves 100% of the original surface silhouette and volume by projecting relaxed vertices back to the pre-stroke surface triangles.
+    - **Standard Laplacian**: Classic 3D isotropic smoothing for evening out surface bumps and wrinkles.
+  - **Hard Edge (Crease) Preservation**:
+    - Automatically detects sharp edges via dihedral angle threshold.
+    - Vertices on creases slide strictly along the crease contour without rounding off sharp chamfers and hard edges.
+    - Crease corners and junctions remain locked.
 - **Intelligent Relax Modes**:
   - **Auto-lock**: Automatically determines stroke intent based on initial click position. If initiated near mesh boundary edges, it relaxes boundary contours while locking interior vertices. If initiated on interior surfaces, it relaxes interior vertices while strictly locking mesh boundaries.
   - **Interior Only**: Smooths interior topology only; outer silhouette and boundaries remain fixed.
@@ -44,8 +51,11 @@ Extracted and refined from the QuadDraw relax brush, RelaxTool operates directly
 
 - **Radius (px)**: Brush radius in screen space pixels (5 to 500 px).
 - **Strength**: Smoothing strength factor per step (0.01 to 1.0).
-- **Iterations**: Number of Laplacian smoothing passes per drag increment (1 to 20).
-- **Relax Mode**: Vertex constraint mode (`Auto-lock`, `Interior Only`, `Border Only`, `All Vertices`).
+- **Iterations**: Number of smoothing passes per drag increment (1 to 20).
+- **Relax Mode**: Boundary constraint mode (`Auto-lock`, `Interior Only`, `Border Only`, `All Vertices`).
+- **Deformation**: Relaxation algorithm (`Tangential Slide`, `Project to Initial Surface`, `Standard Laplacian`).
+- **Preserve Hard Edges (Creases)**: Protects sharp edges and ridge features from collapsing.
+- **Crease Angle**: Dihedral angle threshold in degrees (1° to 179°) for detecting crease edges.
 - **Respect Vertex Selection**: When enabled, relaxes only selected vertices.
 - **Brush Color**: Viewport brush circle color in idle state.
 - **Active Brush Color**: Viewport brush circle color while actively smoothing.

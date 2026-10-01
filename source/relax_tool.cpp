@@ -35,6 +35,7 @@ Bool RelaxToolData::InitTool(BaseDocument* doc, BaseContainer& data, BaseThread*
 
 void RelaxToolData::FreeTool(BaseDocument* doc, BaseContainer& data)
 {
+    m_engine.EndStroke();
     m_isRelaxDragging = false;
     m_isResizingBrush = false;
     m_cursorInView = false;
@@ -47,6 +48,9 @@ void RelaxToolData::InitDefaultSettings(BaseDocument* doc, BaseContainer& data)
     data.SetFloat(RELAX_STRENGTH, 0.35);
     data.SetInt32(RELAX_ITERATIONS, 1);
     data.SetInt32(RELAX_MODE, RELAX_MODE_AUTOLOCK);
+    data.SetInt32(RELAX_ALGORITHM, RELAX_ALGO_TANGENTIAL);
+    data.SetBool(RELAX_PRESERVE_CREASES, true);
+    data.SetFloat(RELAX_CREASE_ANGLE, 45.0);
     data.SetBool(RELAX_USE_SELECTION, false);
     data.SetVector(RELAX_BRUSH_COLOR, Vector(0.3, 0.75, 1.0));
     data.SetVector(RELAX_ACTIVE_COLOR, Vector(0.15, 0.9, 1.0));
@@ -181,6 +185,11 @@ Bool RelaxToolData::MouseInput(BaseDocument* doc, BaseContainer& data, BaseDraw*
     Int32 iterations = data.GetInt32(RELAX_ITERATIONS, 1);
     Int32 relaxMode = data.GetInt32(RELAX_MODE, RELAX_MODE_AUTOLOCK);
     Bool useSelection = data.GetBool(RELAX_USE_SELECTION, false);
+    Int32 algorithm = data.GetInt32(RELAX_ALGORITHM, RELAX_ALGO_TANGENTIAL);
+    Bool preserveCreases = data.GetBool(RELAX_PRESERVE_CREASES, true);
+    Float creaseAngle = data.GetFloat(RELAX_CREASE_ANGLE, 45.0);
+
+    m_engine.BeginStroke(mesh, algorithm, preserveCreases, creaseAngle);
 
     Bool lockBorder = false;
     Bool lockInterior = false;
@@ -225,7 +234,7 @@ Bool RelaxToolData::MouseInput(BaseDocument* doc, BaseContainer& data, BaseDraw*
     m_cursorY = my;
 
     // Initial relaxation step at click position
-    m_engine.RelaxVertices(mesh, bd, mx, my, brushRadius, strength, lockBorder, lockInterior, iterations, useSelection);
+    m_engine.RelaxVertices(mesh, bd, mx, my, brushRadius, strength, lockBorder, lockInterior, iterations, useSelection, algorithm, preserveCreases, creaseAngle);
     DrawViews(DRAWFLAGS::ONLY_ACTIVE_VIEW | DRAWFLAGS::NO_THREAD | DRAWFLAGS::NO_ANIMATION);
 
     BaseContainer device;
@@ -240,11 +249,12 @@ Bool RelaxToolData::MouseInput(BaseDocument* doc, BaseContainer& data, BaseDraw*
         m_cursorX = mx;
         m_cursorY = my;
 
-        m_engine.RelaxVertices(mesh, bd, mx, my, brushRadius, strength, lockBorder, lockInterior, iterations, useSelection);
+        m_engine.RelaxVertices(mesh, bd, mx, my, brushRadius, strength, lockBorder, lockInterior, iterations, useSelection, algorithm, preserveCreases, creaseAngle);
         DrawViews(DRAWFLAGS::ONLY_ACTIVE_VIEW | DRAWFLAGS::NO_THREAD | DRAWFLAGS::NO_ANIMATION);
     }
 
     win->MouseDragEnd();
+    m_engine.EndStroke();
     m_isRelaxDragging = false;
     m_relaxLockBorder = false;
     m_relaxLockInterior = false;
@@ -252,12 +262,18 @@ Bool RelaxToolData::MouseInput(BaseDocument* doc, BaseContainer& data, BaseDraw*
     EventAdd();
     DrawViews(DRAWFLAGS::ONLY_ACTIVE_VIEW | DRAWFLAGS::NO_THREAD | DRAWFLAGS::NO_ANIMATION);
 
+    String algoName = "Tangential"_s;
+    if (algorithm == RELAX_ALGO_PROJECT)
+        algoName = "Projected"_s;
+    else if (algorithm == RELAX_ALGO_LAPLACIAN)
+        algoName = "Laplacian"_s;
+
     if (lockInterior)
-        StatusSetText("Relax Tool: Relaxed border vertices (interior locked)."_s);
+        StatusSetText(FormatString("Relax Tool [@]: Relaxed border vertices (interior locked)."_s, algoName));
     else if (lockBorder)
-        StatusSetText("Relax Tool: Relaxed interior vertices (border locked)."_s);
+        StatusSetText(FormatString("Relax Tool [@]: Relaxed interior vertices (border locked)."_s, algoName));
     else
-        StatusSetText("Relax Tool: Relaxed vertices."_s);
+        StatusSetText(FormatString("Relax Tool [@]: Relaxed vertices."_s, algoName));
 
     return true;
 }
@@ -392,6 +408,7 @@ Bool RelaxToolData::KeyboardInput(BaseDocument* doc, BaseContainer& data, BaseDr
     Int32 key = msg.GetInt32(BFM_INPUT_CHANNEL);
     if (key == KEY_ESC)
     {
+        m_engine.EndStroke();
         m_isRelaxDragging = false;
         m_isResizingBrush = false;
         DrawViews(DRAWFLAGS::ONLY_ACTIVE_VIEW | DRAWFLAGS::NO_THREAD | DRAWFLAGS::NO_ANIMATION);

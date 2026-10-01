@@ -14,6 +14,14 @@ STRINGTABLE toolrelaxtool
     RELAX_MODE_BORDER          "Border Only";
     RELAX_MODE_ALL             "All Vertices";
 
+    RELAX_GROUP_SHAPE          "Shape Preservation";
+    RELAX_ALGORITHM            "Deformation";
+    RELAX_ALGO_LAPLACIAN       "Standard Laplacian";
+    RELAX_ALGO_TANGENTIAL      "Tangential Slide";
+    RELAX_ALGO_PROJECT         "Project to Initial Surface";
+    RELAX_PRESERVE_CREASES     "Preserve Hard Edges (Creases)";
+    RELAX_CREASE_ANGLE         "Crease Angle";
+
     RELAX_GROUP_SELECTION      "Selection";
     RELAX_USE_SELECTION        "Respect Vertex Selection";
 

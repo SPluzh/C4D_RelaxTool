@@ -30,6 +30,24 @@ CONTAINER toolrelaxtool
             }
         }
 
+        GROUP RELAX_GROUP_SHAPE
+        {
+            DEFAULT 1;
+
+            LONG RELAX_ALGORITHM
+            {
+                CYCLE
+                {
+                    RELAX_ALGO_TANGENTIAL;
+                    RELAX_ALGO_PROJECT;
+                    RELAX_ALGO_LAPLACIAN;
+                }
+            }
+
+            BOOL RELAX_PRESERVE_CREASES { }
+            REAL RELAX_CREASE_ANGLE     { UNIT DEGREE; MIN 1.0; MAX 179.0; MINSLIDER 10.0; MAXSLIDER 90.0; STEP 1.0; }
+        }
+
         GROUP RELAX_GROUP_SELECTION
         {
             DEFAULT 1;

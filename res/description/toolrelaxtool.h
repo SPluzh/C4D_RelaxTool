@@ -17,6 +17,16 @@ enum
     RELAX_MODE_BORDER       = 2,
     RELAX_MODE_ALL          = 3,
 
+    // Shape Preservation / Algorithm
+    RELAX_GROUP_SHAPE       = 3040,
+    RELAX_ALGORITHM         = 3041,
+    RELAX_ALGO_LAPLACIAN    = 0,
+    RELAX_ALGO_TANGENTIAL   = 1,
+    RELAX_ALGO_PROJECT      = 2,
+
+    RELAX_PRESERVE_CREASES  = 3042,
+    RELAX_CREASE_ANGLE      = 3043,
+
     // Selection
     RELAX_GROUP_SELECTION   = 3020,
     RELAX_USE_SELECTION     = 3021,
