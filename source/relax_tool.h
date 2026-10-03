@@ -5,8 +5,8 @@
 #include "c4d_descriptiondialog.h"
 #include "relax_engine.h"
 
-// Development Plugin ID (can be replaced with an official ID registered at Plugincafe)
-#define PLUGIN_ID_RELAXTOOL 1067829
+// Registered Plugin ID from Plugincafe
+#define PLUGIN_ID_RELAXTOOL 1070822
 
 namespace cinema
 {
